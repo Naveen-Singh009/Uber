@@ -1,6 +1,7 @@
 import express from 'express'
 
-import {registerUser, loginUser} from '../controllers/user.controller.js'
+import {registerUser, loginUser, getUserProfile} from '../controllers/user.controller.js'
+import { authUser } from '../middlewares/auth.middleware.js'
 
 import {body} from 'express-validator'
 
@@ -19,6 +20,8 @@ router.post('/login', [
     body('password').isLength({min: 6}).withMessage('password must be atleast 6 char long')
 ], loginUser);
 
+
+router.get('/profile',authUser, getUserProfile)
 
 
 
