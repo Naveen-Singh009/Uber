@@ -41,9 +41,19 @@ userSchema.methods.comparePassword = async function(password){
     return await bcrypt.compare(password, this.password);
 }
 
-userSchema.methods.hashPassword = async function(password){
+// userSchema.methods.hashPassword = async function(password){
+//     return await bcrypt.hash(password, 10);
+// }
+// userSchema.methods.hashPassword = async function (password) {
+//     if (!password) throw new Error('Password is required.');
+//     return await bcrypt.hash(password, 10);
+// };
+
+export const hashPassword = async (password) => {
+    if (!password) throw new Error('Password is required.');
     return await bcrypt.hash(password, 10);
-}
+};
+
 
 export const userModel = mongoose.model('user', userSchema);
 
