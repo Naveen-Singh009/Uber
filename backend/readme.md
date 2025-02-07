@@ -197,3 +197,5 @@ The request body must be a JSON object with the following structure:
 - Passwords are stored securely using hashing.
 - A JWT token is returned upon successful registration or login, which can be used for authentication in subsequent requests.
 
+
+

@@ -11,8 +11,14 @@ const registerUser = async ( req, res , next) =>{
     }
 
     const {fullname, email, password} = req.body;
+    const isUserAlreadyExist = await userModel.findOne({email});
+
+    if(isUserAlreadyExist){
+        return res.status(400).json({message: 'User already exist'});
+    }
     // documentation
     const hashedPassword = await hashPassword(password);
+
 
     const user = await createUser({
         firstname:  fullname.firstname, 
@@ -59,10 +65,19 @@ const getUserProfile = async(req, res, next)=>{
 }
 
 const logoutUser = async (req, res, next)=>{
-  res.clearCookie('token');
-  const token = req.cookie?.token || req.headers.authorization?.split(' ')[1];
-  await BlacklistToken.create({token})
-  res. status(200).json({message : 'Logged out'});
+    try {
+        const token = req.cookie?.token || req.headers.authorization?.split(' ')[1];
+        // const token = req.cookie?.token || (req.headers.authorization && req.headers.authorization.startsWith('Bearer ') ? req.headers.authorization.split(' ')[1] : null);
+        if (!token) {
+            return res.status(400).json({ error: "Token is required for logout" });
+        }
+        res.clearCookie('token');
+        await BlacklistToken.create({token})
+        res. status(200).json({message : 'Logged out'});
+    } catch (error) {
+        console.error("Logout error:", error);
+        res.status(500).json({ error: error.message });
+    }
 }
 
 export {
